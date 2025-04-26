@@ -6,7 +6,7 @@ from datetime import datetime
 
 class ProxyServerWithCache:
     def __init__(self):
-        self.cache = {}  # Dictionary to store cached responses
+        self.cache = {}
         self.server_port = 12000
 
 
@@ -75,7 +75,7 @@ class ProxyServerWithCache:
                     except:
                         pass
 
-                # Save to cache
+
                 self.cache[url] = {
                     "content": content,
                     "timestamp": time.time(),

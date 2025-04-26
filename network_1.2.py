@@ -9,7 +9,7 @@ class ProxyServerWithCache:
         self.cache = {}  # Dictionary to store cached responses
         self.server_port = 12000
 
-        # 🔐 Firewall: list of blocked domains
+
         self.blocked_domains = [
             "youtube.com",
             "facebook.com",
@@ -30,25 +30,24 @@ class ProxyServerWithCache:
         server_socket = socket(AF_INET, SOCK_STREAM)
         server_socket.bind(('localhost', self.server_port))
         server_socket.listen(1)
-        print(f"🌀 Proxy server with cache, firewall, and logging is running on port {self.server_port}")
+        print(f" Proxy server with cache, firewall, and logging is running on port {self.server_port}")
 
         while True:
             connection_socket, addr = server_socket.accept()
-            print("🔗 Connected by:", addr)
+            print(" Connected by:", addr)
 
             try:
                 url = connection_socket.recv(1024).decode().strip()
-                print("🌍 Client requested:", url)
+                print(" Client requested:", url)
 
-                # 🔐 FIREWALL CHECK
+
                 domain = urlparse(url).netloc.lower()
                 if any(domain.endswith(blocked) for blocked in self.blocked_domains):
-                    print(f"🚫 BLOCKED: {domain}")
-                    connection_socket.send("❌ Access to this domain is blocked by the firewall.".encode())
+                    print(f" BLOCKED: {domain}")
+                    connection_socket.send(" Access to this domain is blocked by the firewall.".encode())
                     connection_socket.close()
                     continue
 
-                # 💾 CACHE CHECK
                 if url in self.cache:
                     cached_data = self.cache[url]
                     age = time.time() - cached_data["timestamp"]
@@ -60,14 +59,14 @@ class ProxyServerWithCache:
                         connection_socket.close()
                         continue
                     else:
-                        print("⏰ Cache expired, refetching...")
+                        print(" Cache expired, refetching...")
 
-                # 🌐 FETCH FROM THE WEB
+
                 response = requests.get(url)
-                content = response.text[:5000]  # Limit content size
+                content = response.text[:5000]
                 headers = response.headers
 
-                # Try to get max-age from Cache-Control
+
                 max_age = 0
                 cache_control = headers.get("Cache-Control", "")
                 if "max-age" in cache_control:
@@ -88,7 +87,7 @@ class ProxyServerWithCache:
                 connection_socket.send(content.encode())
 
             except Exception as e:
-                error_message = f"❌ Failed to fetch {url}: {str(e)}"
+                error_message = f" Failed to fetch {url}: {str(e)}"
                 print(error_message)
                 connection_socket.send(error_message.encode())
 

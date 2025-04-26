@@ -83,7 +83,7 @@ class ProxyServerWithCache:
                 }
 
                 self.log_request(url, "CACHE_MISS")
-                print(f"💾 Cached {url} for {max_age} seconds")
+                print(f" Cached {url} for {max_age} seconds")
                 connection_socket.send(content.encode())
 
             except Exception as e:
